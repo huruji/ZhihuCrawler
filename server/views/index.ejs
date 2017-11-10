@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>头像</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>类型</th>
+        <th>id</th>
+        <th>签名</th>
+        <th>token</th>
+        <th>机构</th>
+        <th>关注</th>
+        <th>头像模板</th>
+
+        <th>回答</th>
+        <th>文章</th>
+        <th>url</th>
+
+        <th>favoriteCount</th>
+        <th>赞同数</th>
+        <th>cqc</th>
+        <th>关注专栏数</th>
+        <th>参与Live</th>
+        <th>被收藏数</th>
+        <th>工作</th>
+        <th>关注话题</th>
+        <th>描述</th>
+        <th>行业</th>
+        <th>专栏</th>
+        <th>ttc</th>
+        <th>badge</th>
+        <th>封面</th>
+        <th>提问</th>
+        <th>居住</th>
+        <th>关注问题</th>
+        <th>感谢</th>
+    </tr>
+    </thead>
+    <tbody>
+    <%for(var i=0;i<data.length;i++){%>
+    <tr>
+        <th><%= i+start %></th>
+        <th><img style="width:30px;height:30px" src=<%= data[i].avatarUrl%>></th>
+        <th><a target="_brank" href=<%= 'https://www.zhihu.com/people/' + data[i].urlToken%>><%= data[i].name %></a></th>
+        <th><%= data[i].gender %></th>
+        <th><%= data[i].userType %></th>
+        <th><%= data[i].id %></th>
+        <th><%= data[i].headline %></th>
+        <th><%= data[i].urlToken %></th>
+        <th><%= data[i].isOrg %></th>
+        <th><%= data[i].followerCount %></th>
+        <th><%= data[i].avatarUrlTemplate %></th>
+
+        <th><%= data[i].answerCount %></th>
+        <th><%= data[i].articlesCount %></th>
+        <th><%= data[i].url %></th>
+
+
+        <th><%= data[i].favoriteCount %></th>
+        <th><%= data[i].voteupCount %></th>
+        <th><%= data[i].commercialQuestionCount %></th>
+        <th><%= data[i].followingColumnsCount %></th>
+        <th><%= data[i].participatedLiveCount %></th>
+        <th><%= data[i].favoritedCount %></th>
+        <th><%= data[i].employments %></th>
+        <th><%= data[i].followingTopicCount %></th>
+        <th><%= data[i].description %></th>
+        <th><%= data[i].business %></th>
+        <th><%= data[i].columnsCount %></th>
+        <th><%= data[i].thankToCount %></th>
+        <th><%= data[i].badge %></th>
+        <th><%= data[i].coverUrl %></th>
+        <th><%= data[i].questionCount %></th>
+        <th><%= data[i].locations %></th>
+        <th><%= data[i].followingQuestionCount %></th>
+        <th><%= data[i].thankedCount %></th>
+
+<%}%>
+    </tbody>
+</table>
+<div>
+    <%for(var i =0;i<count; i++){%>
+    <a class="btn btn-default" role="button" href=<%= '/?page=' + (i+1) %> ><%= (i + 1) %></a>
+    <%}%>
+</div>
+</body>
+</html>
