@@ -1,0 +1,29 @@
+<%- include("./public/header.ejs") %>
+<%- include("./public/nav.ejs") %>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th></th>
+        <th>话题名</th>
+        <th>话题ID</th>
+        <th>关注人数</th>
+        <th>介绍</th>
+    </tr>
+    </thead>
+    <tbody>
+    <%for(var i=0;i<data.length;i++){%>
+    <tr>
+        <th> <%- i+start %> </th>
+        <th><img style="width:80px;height:80px" src=<%= data[i].avatarUrl.replace(/^https:\/\/[a-zA-Z0-9\.]+\//, '/getimg/')%>></th>
+        <th> <%= data[i].name %> </th>
+        <th> <%= data[i].topicId %> </th>
+        <th> <%= data[i].followers %> </th>
+        <th> <%- data[i].introduction %> </th>
+    </tr>
+    <%}%>
+    </tbody>
+</table>
+<%-include("./public/page.ejs")%>
+</body>
+</html>

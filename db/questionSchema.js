@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 mongoose.Promise = Promise;
 
 const QuestionModel = new Schema({
+  // 是否可评论
   adminClosedComment: {
     type: Boolean
   },

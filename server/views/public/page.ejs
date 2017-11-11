@@ -1,0 +1,52 @@
+<nav aria-label="Page navigation" class="text-center">
+    <ul class="pagination">
+        <li>
+            <a href=<%= url + '?page=' + (page - 1) %> aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+
+        <%for(var i =page - 4; i < page; i++){%>
+            <% if(i >= 1) {%>
+                <li>
+                    <a href=<%= url + '?page=' + i %> aria-label="Previous">
+                        <span aria-hidden="true"><%= i %></span>
+                    </a>
+                </li>
+            <% }%>
+        <%}%>
+
+        <li class="active"><a href="#"><%= page %></a></li>
+
+
+        <%for(var i = page + 1; i < page + 4; i++){%>
+            <% if(i <= count) {%>
+                <li>
+                    <a href=<%= url + '?page=' + i %> aria-label="Previous">
+                        <span aria-hidden="true"><%= i %></span>
+                    </a>
+                </li>
+            <% }%>
+        <%}%>
+
+        <% if(count - 5 > (page + 4)){ %>
+            <li class="disabled"><a href="#">...</a></li>
+        <% } %>
+
+        <%for(var i = count - 1; i > count - 4; i--){%>
+            <% if(i > page + 4) {%>
+                <li>
+                    <a href=<%= url + '?page=' + i %> aria-label="Previous">
+                        <span aria-hidden="true"><%= i %></span>
+                    </a>
+                </li>
+            <% }%>
+        <%}%>
+
+        <li>
+            <a href=<%= url + '?page=' + (page + 1) %> aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
