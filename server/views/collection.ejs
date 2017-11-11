@@ -4,13 +4,10 @@
     <thead>
     <tr>
         <th>序号</th>
-        <th>问题名</th>
-        <th>答案数</th>
-        <th>评论数</th>
+        <th>收藏夹名</th>
+        <th>回答数</th>
         <th>关注人数</th>
-        <th>浏览人数</th>
         <th>更新时间</th>
-        <th>描述</th>
     </tr>
     </thead>
     <tbody>
@@ -19,11 +16,8 @@
         <th> <%= i+start %> </th>
         <th> <%= data[i].title%> </th>
         <th> <%= data[i].answerCount %> </th>
-        <th> <%= data[i].commentCount %> </th>
         <th> <%= data[i].followerCount %> </th>
-        <th> <%= data[i].visitCount %> </th>
-        <th> <%= data[i].updatedTime %> </th>
-        <th> <%- data[i].detail %> </th>
+        <th> <%= data[i].updateTime %> </th>
     </tr>
     <%}%>
     </tbody>

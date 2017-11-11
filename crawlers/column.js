@@ -39,7 +39,11 @@ async function write() {
             console.log('\n');
 
             let columnAboutUrl = `https://zhuanlan.zhihu.com/${id}/about`;
-            let columnAboutHtml = await request.get(columnAboutUrl).then(res => res.text);
+            let columnAboutHtml = await request.get(columnAboutUrl).then(res => res.text).catch(err => {
+                setTimeout(async () => {
+                    await start();
+                },1000 * 5);
+            });
             let intro = selectIntro(columnAboutHtml);
             let saveColumn = {
                 title: currentColumn.title,
@@ -47,11 +51,11 @@ async function write() {
                 imageUrl: currentColumn.imageUrl,
                 id: currentColumn.id,
                 followers: currentColumn.followers,
-                articleCount: currentColumn.articleCount,
+                articlesCount: currentColumn.articlesCount,
                 commentPermission: currentColumn.commentPermission,
                 url: currentColumn.url,
                 author: currentColumn.author,
-                update: currentColumn.update,
+                updated: currentColumn.updated,
                 find_by_user: user.urlToken
             };
             console.log(`开始保存`);

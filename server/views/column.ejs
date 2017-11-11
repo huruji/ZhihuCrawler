@@ -1,0 +1,36 @@
+<%- include("./public/header.ejs") %>
+<%- include("./public/nav.ejs") %>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>专栏图</th>
+        <th>专栏名</th>
+        <th>关注人数</th>
+        <th>文章数量</th>
+        <th>专栏作者</th>
+        <th>更新时间</th>
+        <th>介绍</th>
+    </tr>
+    </thead>
+    <tbody>
+    <%for(var i=0;i<data.length;i++){%>
+    <tr>
+        <th> <%= i+start %> </th>
+        <th><img style="width:80px;height:80px" src=<%= data[i].imageUrl.replace(/^https:\/\/[a-zA-Z0-9\.]+\//, '/getimg/')%>/></th>
+        <th> <%= data[i].title %> </th>
+        <th> <%= data[i].followers %> </th>
+        <th> <%= data[i].articlesCount %> </th>
+        <th>
+            <img style="width:80px;height:80px" src=<%= data[i].author.avatarUrl.replace(/^https:\/\/[a-zA-Z0-9\.]+\//, '/getimg/')%>/>
+            <p> <%= data[i].author.name %> </p>
+        </th>
+        <th> <%= data[i].updated %> </th>
+        <th> <%- data[i].intro %> </th>
+    </tr>
+    <%}%>
+    </tbody>
+</table>
+<%-include("./public/page.ejs")%>
+</body>
+</html>
