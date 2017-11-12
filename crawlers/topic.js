@@ -31,15 +31,17 @@ async function write() {
     for(let key in topic) {
         let currentTopic = topic[key];
         let existsTopic = await TopicModel.find({topicId: currentTopic.id}).exec();
-        console.log(Array.isArray(existsTopic));
-        if(existsTopic.length == 0) {
+
+        if(existsTopic.length === 0) {
             let id = currentTopic.id;
 
             console.log(`抓取话题 ${currentTopic.name} 的页面`);
             console.log('\n');
 
             let topicHotUrl = `https://www.zhihu.com/topic/${id}/hot`;
-            let topicHotHtml = await request.get(topicHotUrl).then(res => res.text);
+            let topicHotHtml = await request.get(topicHotUrl).then(res => res.text).catch( async (err) => {
+                await errHandle();
+            });
             let followers = selectFollowers(topicHotHtml);
             let saveTopic = {
                 name: currentTopic.name,
@@ -97,24 +99,40 @@ async function findUserTopics() {
     console.log('\n');
 
     const userTopicUrl = `https://www.zhihu.com/people/${user.urlToken}/following/topics?page=${pageSkip}`;
-    const userTopicHtml = await request.get(userTopicUrl).then(res => res.text).catch(err => {
-        console.log(err);
+    const userTopicHtml = await request.get(userTopicUrl).then(res => res.text).catch( async (err) => {
+        await errHandle();
     });
     topic = selectTopics(userTopicHtml);
+
+
+
+    while(Object.keys(topic).length < 1) {
+        await noDataHandle();
+    }
 
     console.log(`已经获取到话题`);
     console.log(Object.keys(topic).length);
     console.log('\n');
+}
 
-    while(Object.keys(topic).length < 1) {
-        console.log(`没有关注的话题了`);
-        skip++;
-        pageSkip = 0;
-        user = '';
-        topic = {};
-        const skipData = jsonfile.readFileSync(skipFile);
-        skipData.topicSkip = Number(skipData.topicSkip) + 1;
-        jsonfile.writeFileSync(skipFile, skipData);
-        await findUserTopics();
-    }
+
+async function errHandle() {
+    console.log('出错了，重新抓取');
+    await reStart();
+}
+
+async function noDataHandle() {
+    console.log('没有关注的话题了');
+    await reStart();
+}
+
+async function reStart() {
+    skip++;
+    pageSkip = 0;
+    user = '';
+    topic = {};
+    const skipData = jsonfile.readFileSync(skipFile);
+    skipData.topicSkip = Number(skipData.topicSkip) + 1;
+    jsonfile.writeFileSync(skipFile, skipData);
+    await findUserTopics();
 }
