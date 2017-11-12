@@ -31,7 +31,7 @@ async function write() {
     for(let key in column) {
         let currentColumn = column[key];
         let existsColumn = await ColumnModel.find({topicId: currentColumn.id}).exec();
-        console.log(Array.isArray(existsColumn));
+
         if(existsColumn.length === 0) {
             let id = currentColumn.id;
 
@@ -39,11 +39,11 @@ async function write() {
             console.log('\n');
 
             let columnAboutUrl = `https://zhuanlan.zhihu.com/${id}/about`;
-            let columnAboutHtml = await request.get(columnAboutUrl).then(res => res.text).catch(err => {
-                setTimeout(async () => {
-                    await start();
-                },1000 * 5);
+
+            let columnAboutHtml = await request.get(columnAboutUrl).then(res => res.text).catch( async (err) => {
+                await errHandle();
             });
+
             let intro = selectIntro(columnAboutHtml);
             let saveColumn = {
                 title: currentColumn.title,
@@ -99,28 +99,43 @@ async function findUserColumns() {
         }
     }
 
-    console.log(`开始获取用户${user.urlToken}的关注专栏`);
+    console.log(`开始获取用户 ${user.urlToken} 的关注专栏`);
     console.log('\n');
 
     const userTopicUrl = `https://www.zhihu.com/people/${user.urlToken}/following/columns?page=${pageSkip}`;
-    const userTopicHtml = await request.get(userTopicUrl).then(res => res.text).catch(err => {
-        console.log(err);
+
+    const userTopicHtml = await request.get(userTopicUrl).then(res => res.text).catch( async (err) => {
+        await errHandle();
     });
+
     column = selectColumns(userTopicHtml);
+
+    while(Object.keys(column).length < 1) {
+        await noColumnHandle();
+    }
 
     console.log(`已经获取到专栏`);
     console.log(Object.keys(column).length);
     console.log('\n');
+}
 
-    while(Object.keys(column).length < 1) {
-        console.log(`没有关注的专栏了`);
-        skip++;
-        pageSkip = 0;
-        user = '';
-        column = {};
-        const skipData = jsonfile.readFileSync(skipFile);
-        skipData.columnSkip = Number(skipData.columnSkip) + 1;
-        jsonfile.writeFileSync(skipFile, skipData);
-        await findUserColumns();
-    }
+async function errHandle() {
+    console.log('出错了，重新抓取');
+    await reStart();
+}
+
+async function noColumnHandle() {
+    console.log(`没有关注的专栏了`);
+    await reStart();
+}
+
+async function reStart() {
+    skip++;
+    pageSkip = 0;
+    user = '';
+    column = {};
+    const skipData = jsonfile.readFileSync(skipFile);
+    skipData.columnSkip = Number(skipData.columnSkip) + 1;
+    jsonfile.writeFileSync(skipFile, skipData);
+    await findUserColumns();
 }

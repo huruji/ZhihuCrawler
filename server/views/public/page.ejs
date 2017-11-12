@@ -33,7 +33,7 @@
             <li class="disabled"><a href="#">...</a></li>
         <% } %>
 
-        <%for(var i = count - 1; i > count - 4; i--){%>
+        <%for(var i = count - 4; i <= count; i++){%>
             <% if(i > page + 4) {%>
                 <li>
                     <a href=<%= url + '?page=' + i %> aria-label="Previous">

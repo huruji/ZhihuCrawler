@@ -22,7 +22,10 @@ let authorization = 'oauth 8274ffb553d511e6a7fdacbc328e205d';
 
 mongoConnection();
 
-(async function getLive(){
+(async function() {
+   await getLive();
+})()
+async function getLive(){
     skip = parseInt(jsonfile.readFileSync(skipFile).liveSkip);
     user = await UserModel.findOne({"participatedLiveCount": {$gt:0}}).skip(skip).exec();
 
@@ -81,7 +84,7 @@ mongoConnection();
     skipData.liveSkip = Number(skipData.liveSkip) + 1;
     jsonfile.writeFileSync(skipFile, skipData);
     await getLive();
-}());
+}
 
 async function errHandle() {
     console.log('出错了，重新开始抓取');
