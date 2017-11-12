@@ -82,31 +82,37 @@ async function findUserColleaction() {
 
     const userCollectionUrl = `https://www.zhihu.com/people/${user.urlToken}/following/collections?page=${pageSkip}`;
     const userCollectionHtml = await request.get(userCollectionUrl).then(res => res.text).catch( async err => {
-        console.log("出错");
-        skip++;
-        pageSkip = 0;
-        user = '';
-        collections = {};
-        const skipData = jsonfile.readFileSync(skipFile);
-        skipData.collectionSkip = Number(skipData.collectionSkip) + 1;
-        jsonfile.writeFileSync(skipFile, skipData);
-        await findUserColleaction();
+        await errHandle();
     });
     collections = selectCollections(userCollectionHtml);
+
+
+    while(Object.keys(collections).length < 1) {
+        await noDataHandle();
+    }
 
     console.log(`已经获取到收藏夹`);
     console.log(Object.keys(collections).length);
     console.log('\n');
+}
 
-    while(Object.keys(collections).length < 1) {
-        console.log(`没有关注的收藏夹了`);
-        skip++;
-        pageSkip = 0;
-        user = '';
-        collections = {};
-        const skipData = jsonfile.readFileSync(skipFile);
-        skipData.collectionSkip = Number(skipData.collectionSkip) + 1;
-        jsonfile.writeFileSync(skipFile, skipData);
-        await findUserColleaction();
-    }
+async function errHandle() {
+    console.log("出错了，重新抓取");
+    await reStart();
+}
+
+async function noDataHandle() {
+    console.log("没有关注的收藏夹了");
+    await reStart();
+}
+
+async function reStart() {
+    skip++;
+    pageSkip = 0;
+    user = '';
+    collections = {};
+    const skipData = jsonfile.readFileSync(skipFile);
+    skipData.collectionSkip = Number(skipData.collectionSkip) + 1;
+    jsonfile.writeFileSync(skipFile, skipData);
+    await findUserColleaction();
 }
