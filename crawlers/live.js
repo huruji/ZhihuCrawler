@@ -1,8 +1,10 @@
 const mongoConnection = require('./../db/numberConnection');
 const LiveModel = require('./../db/live');
+const UserModel = require('./../db/numberSchema');
 const request = require('superagent');
 const cheerio = require('cheerio');
 const jsonfile = require('jsonfile');
+
 const path = require('path');
 
 const skipFile = path.join(__dirname,'../skipConfig.json');
@@ -18,30 +20,42 @@ const liveIndexUlr = 'https://www.zhihu.com/lives/';
 
 let authorization = 'oauth 8274ffb553d511e6a7fdacbc328e205d';
 
-/*(async function init() {
-    await mongoConnection();
-
-    skip = parseInt(jsonfile.readFileSync(skipFile).collectionSkip);
-    await start();
-})();
-
-async function start() {
-    await findUserColleaction();
-    await write();
-}*/
-
 mongoConnection();
-(async function getLiveIndex() {
-    cookie = await request.get(liveIndexUlr).then((res) => res.header['set-cookie'][0].split(';')[0]);
-    console.log(`获取到cookie为 ${cookie}`);
-    console.log(`开始抓取offset=${offset} 的live`);
-    let resData = await request.get(`https://api.zhihu.com/lives/homefeed?includes=live&limit=10&offset=${offset}`)
+
+(async function getLive(){
+    skip = parseInt(jsonfile.readFileSync(skipFile).liveSkip);
+    user = await UserModel.findOne({"participatedLiveCount": {$gt:0}}).skip(skip).exec();
+
+    console.log(`已经获取到了用户 ${user.name} 的数据`);
+
+    let userIndex = await request
+        .get(`https://www.zhihu.com/people/${user.urlToken}/activities`)
+        .then(res => res.text).catch( async (err) => {
+            await errHandle();
+        });
+    let $ = cheerio.load(userIndex);
+    let liveUrl = $('.Profile-lightList a').eq(0).attr('href');
+    if(!liveUrl) {
+       return await errHandle();
+    }
+    let id = liveUrl.substr(liveUrl.lastIndexOf('/') + 1);
+
+    console.log(`正在获取用户 ${user.name} 参与过的live`);
+    console.log('\n');
+
+    let liveApiUrl = `https://api.zhihu.com/people/${id}/lives`;
+    let resData = await request.get(liveApiUrl)
         .set('cookie', 'cookie')
         .set('authorization', authorization)
-        .then((res) => JSON.parse(res.text).data);
+        .then((res) => {
+            return JSON.parse(res.text).data
+        })
+        .catch(async (err) => {
+            await errHandle()
+        });
 
     for(let i = 0; i < resData.length; i++) {
-        let liveData = resData[i].live;
+        let liveData = resData[i];
         let exists = await LiveModel.find({id: liveData.id}).exec();
         if(exists.length===0) {
             let save = {
@@ -61,7 +75,21 @@ mongoConnection();
         } else {
             console.log(`live ${liveData.subject} 已经存在数据库中`);
         }
-        offset += resData.length;
-        await getLiveIndex();
     }
+    skip++;
+    const skipData = jsonfile.readFileSync(skipFile);
+    skipData.liveSkip = Number(skipData.liveSkip) + 1;
+    jsonfile.writeFileSync(skipFile, skipData);
+    await getLive();
 }());
+
+async function errHandle() {
+    console.log('出错了，重新开始抓取');
+    skip++;
+    const skipData = jsonfile.readFileSync(skipFile);
+    skipData.liveSkip = Number(skipData.liveSkip) + 1;
+    jsonfile.writeFileSync(skipFile, skipData);
+    setTimeout(async () => {
+        await getLive();
+    }, 1000 * 5);
+}

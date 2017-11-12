@@ -4,6 +4,7 @@ const QuestionModel = require('./../../db/questionSchema');
 const TopicModel = require('./../../db/topic');
 const CollectionModel = require('./../../db/collection');
 const ColumnModel = require('./../../db/column');
+const LiveModel = require('./../../db/live');
 const request = require('superagent');
 
 
@@ -79,6 +80,21 @@ router.get('/columns', async (ctx, next) => {
     let count = Math.ceil(countData / 100);
     let start = (page * 100) + 1;
     await ctx.render('column', {
+        data,
+        count,
+        start,
+        page: page + 1,
+        url: ctx.request.path
+    })
+});
+
+router.get('/lives', async (ctx, next) => {
+    const page = (ctx.request.query.page - 1) || 0;
+    const data = await LiveModel.find({}, null, {limit: 100, skip: page * 100}).exec();
+    let countData = await LiveModel.count().exec();
+    let count = Math.ceil(countData / 100);
+    let start = (page * 100) + 1;
+    await ctx.render('live', {
         data,
         count,
         start,
