@@ -15,8 +15,14 @@ let users = [];
 let startUser = {};
 let urls = {};
 
-mongoConnection();
 
+
+
+
+(async function init() {
+    await mongoConnection();
+    await start();
+}());
 
 async function start() {
     await getStartUser();
@@ -36,10 +42,9 @@ function initVariable() {
 
 async function getStartUser() {
     log('-----------开始获取爬虫开始的用户-----------');
-
     let user = await UserModel.findOne({thankedCount: {$exists: false}}).exec().urlToken;
     if(!user) {
-        user = CONFIG_USER[Math.floor(Math.random() * CONFIG_USER.length)]
+        user = getRandom(CONFIG_USER);
     }
     startUserToken = user;
     urls = {
@@ -56,8 +61,10 @@ async function getFollowers() {
 
 
     let url = `${urls.followers}?page=${page}`;
-    const html = await request.get(url).then(res => res.text).catch(err => {
-
+    const html = await request.get(url).then(res => res.text).catch( async (err) => {
+        log(`${chalk.red('出错了，重新抓取')}`);
+        page++;
+        await getFollowers();
     });
     users = selectUser(html);
     if(page === 1) {
@@ -92,8 +99,10 @@ async function getFollowings() {
     log(`\n开始获取用户${startUserToken}关注的用户，页面是 ${page}`);
 
     let url = `${urls.following}?page=${page}`;
-    const html = await request.get(url).then(res => res.text).catch(err => {
-
+    const html = await request.get(url).then(res => res.text).catch(async (err) => {
+        log(`${chalk.red('出错了，重新抓取')}`);
+        page++;
+        await getFollowings()
     });
     users = selectUser(html);
     if(users.length > 0) {
@@ -134,13 +143,16 @@ async function writeUser(user) {
     let exists = await UserModel.findOne({urlToken: user.urlToken}).exec();
     if(!exists) {
 
-        log(`\n开始保存 ${user.name} 的数据`);
+        log(`\n开始保存 ${user.name} ${user.urlToken} 的数据`);
 
         await UserModel(user).save();
 
         log(chalk.green('保存成功'));
 
+    } else {
+        log(`\n用户 ${user.name} ${user.urlToken} 已经存在数据库`);
     }
+
 }
 
 function selectUser(html) {
@@ -224,6 +236,6 @@ function selectUser(html) {
     return user;
 }
 
-
-
-
+function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)]
+}
