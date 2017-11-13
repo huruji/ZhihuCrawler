@@ -1,12 +1,12 @@
 const request = require('superagent');
 const cheerio = require('cheerio');
+const chalk = require('chalk');
 
 const mongoConnection = require('./../db/numberConnection');
 const UserModel = require('./../db/numberSchema');
 const CONFIG_USER = require('./../config').user;
 
-
-
+const log = console.log;
 
 let continueCrawl = true;
 let page = 1;
@@ -35,6 +35,8 @@ function initVariable() {
 }
 
 async function getStartUser() {
+    log('-----------开始获取爬虫开始的用户-----------');
+
     let user = await UserModel.findOne({thankedCount: {$exists: false}}).exec().urlToken;
     if(!user) {
         user = CONFIG_USER[Math.floor(Math.random() * CONFIG_USER.length)]
@@ -44,9 +46,15 @@ async function getStartUser() {
         following: `https://www.zhihu.com/people/${startUserToken}/following`,
         followers: `https://www.zhihu.com/people/${startUserToken}/followers`
     };
+
+    log(`获取到的用户的Token是 ${chalk.green(startUserToken)}`);
 }
 
 async function getFollowers() {
+
+    log(`\n开始获取用户${startUserToken}的关注者，页面是 ${page}`);
+
+
     let url = `${urls.followers}?page=${page}`;
     const html = await request.get(url).then(res => res.text).catch(err => {
 
@@ -57,10 +65,17 @@ async function getFollowers() {
     }
 
     if(users.length > 0) {
+
+        log(`\n此页面的用户数量大于1，将开始保存这些用户`);
+
         for(let i = 0; i < users.length; i++) {
             await writeUser(users[i]);
         }
+
     } else {
+
+        log(`\n该用户已经没有了关注者，将开始获取该用户关注的用户`);
+
         continueCrawl = false;
         page = 0;
         users = [];
@@ -73,16 +88,25 @@ async function getFollowers() {
 }
 
 async function getFollowings() {
+
+    log(`\n开始获取用户${startUserToken}关注的用户，页面是 ${page}`);
+
     let url = `${urls.following}?page=${page}`;
     const html = await request.get(url).then(res => res.text).catch(err => {
 
     });
     users = selectUser(html);
     if(users.length > 0) {
+
+        log(`\n此页面的用户数量大于1，将开始保存这些用户`);
+
         for(let i = 0; i < users.length; i++) {
             await writeUser(users[i]);
         }
     } else {
+
+        log(`\n该用户已经没有关注的人了，将开始获取其他用户的数据\n\n\n\n\n\n`);
+
         initVariable();
         return await start();
     }
@@ -96,14 +120,26 @@ async function getFollowings() {
 async function updateStartUser() {
     let exists = await UserModel.findOne({urlToken: startUser.urlToken}).exec();
     if(exists) {
+
+        log(`\n开始更新用户 ${startUserToken} 的数据`);
+
         await UserModel.update({urlToken: startUser.urlToken}, startUser).exec();
+
+        log(chalk.green('更新完成'));
     }
 }
 
 async function writeUser(user) {
+
     let exists = await UserModel.findOne({urlToken: user.urlToken}).exec();
     if(!exists) {
+
+        log(`\n开始保存 ${user.name} 的数据`);
+
         await UserModel(user).save();
+
+        log(chalk.green('保存成功'));
+
     }
 }
 
