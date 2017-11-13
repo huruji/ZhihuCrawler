@@ -55,8 +55,11 @@ async function write() {
 }
 
 
-function selectCollections(html) {
+async function selectCollections(html) {
     const $ = cheerio.load(html);
+    if( !$('#data').attr('data-state')) {
+      return await errHandle();
+    }
     const data = JSON.parse($('#data').attr('data-state').toString());
     return data.entities.favlists;
 }
@@ -84,7 +87,8 @@ async function findUserColleaction() {
     const userCollectionHtml = await request.get(userCollectionUrl).then(res => res.text).catch( async err => {
         await errHandle();
     });
-    collections = selectCollections(userCollectionHtml);
+
+    collections = await selectCollections(userCollectionHtml);
 
 
     while(Object.keys(collections).length < 1) {

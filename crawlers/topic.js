@@ -74,6 +74,9 @@ function selectFollowers(html) {
 
 function selectTopics(html) {
     const $ = cheerio.load(html);
+    if(!$('#data').attr('data-state')) {
+        return errHandle();
+    }
     const data = JSON.parse($('#data').attr('data-state').toString());
     return data.entities.topics;
 }
