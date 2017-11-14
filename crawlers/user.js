@@ -122,7 +122,7 @@ async function getFollowings() {
         log(`\n该用户已经没有关注的人了，将开始获取其他用户的数据\n\n\n\n\n\n`);
 
         initVariable();
-        return await start();
+        await start();
     }
 }
 

@@ -14,8 +14,16 @@ const server = spawn('node', ['--harmony','server.js'], {
 
 log('-------------------开启爬虫进程-------------------');
 
-const crawler = spawn('node', ['--harmony', 'user.js'], {
+let crawler = spawn('node', ['--harmony', 'user.js'], {
     cwd: path.join(__dirname, 'crawlers'),
     stdio: 'inherit'
 });
+
+setInterval(() => {
+    crawler.kill();
+    crawler = spawn('node', ['--harmony', 'user.js'], {
+        cwd: path.join(__dirname, 'crawlers'),
+        stdio: 'inherit'
+    });
+}, 10 * 60 * 1000);
 

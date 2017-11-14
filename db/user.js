@@ -124,7 +124,7 @@ const UserSchema = new Schema({
     thankedCount: {
         type: Number
     },
-    // 数量
+    // 性别
     gender: {
         type: Number
     },

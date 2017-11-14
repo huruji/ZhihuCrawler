@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": " node ./server/server.js",
-    "start": "node index.js",
-    "crawler": "node ./crawlers/index.js"
+    "server": " node --harmony ./server/server.js",
+    "start": "node --harmony index.js",
+    "crawler": "node --harmony ./crawlers/index.js",
+    "user": "node --harmony ./crawlers/user.js"
   },
   "keywords": [],
   "author": "",
