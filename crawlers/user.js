@@ -43,7 +43,7 @@ function initVariable() {
 
 async function getStartUser() {
     log('-----------开始获取爬虫开始的用户-----------');
-    let user = await UserModel.findOne({'columnsCount': {$exists: false}}).skip(4).exec();
+    let user = await UserModel.findOne({'columnsCount': {$exists: false}}).skip(random(100)).exec();
     console.log(user);
     if(!user) {
         user = getRandom(CONFIG_USER);
@@ -166,6 +166,10 @@ function selectUser(html) {
 
     const $ = cheerio.load(html);
 
+    if(!$('#data').attr('data-state')) {
+        return user;
+    }
+
     const data = JSON.parse($('#data').attr('data-state').toString());
 
 
@@ -244,4 +248,8 @@ function selectUser(html) {
 
 function getRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)]
+}
+
+function random(num) {
+    return Math.floor(Math.random() * num) + 1;
 }
