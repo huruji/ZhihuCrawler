@@ -1,5 +1,5 @@
 const Koa = require('koa');
-const mongoConnection = require('./../db/numberConnection');
+const mongoConnection = require('./../db/connection');
 const ejs = require('ejs');
 const views = require('koa-views');
 const path = require('path');

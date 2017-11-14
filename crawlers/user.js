@@ -2,8 +2,8 @@ const request = require('superagent');
 const cheerio = require('cheerio');
 const chalk = require('chalk');
 
-const mongoConnection = require('./../db/numberConnection');
-const UserModel = require('./../db/numberSchema');
+const mongoConnection = require('./../db/connection');
+const UserModel = require('./../db/user');
 const CONFIG_USER = require('./../config').user;
 
 const log = console.log;
@@ -28,6 +28,7 @@ async function start() {
     await getStartUser();
     await getFollowers();
     continueCrawl = true;
+    console.log('开始获取关注的用户');
     await getFollowings();
 }
 
@@ -42,9 +43,12 @@ function initVariable() {
 
 async function getStartUser() {
     log('-----------开始获取爬虫开始的用户-----------');
-    let user = await UserModel.findOne({thankedCount: {$exists: false}}).exec().urlToken;
+    let user = await UserModel.findOne({'columnsCount': {$exists: false}}).skip(4).exec();
+    console.log(user);
     if(!user) {
         user = getRandom(CONFIG_USER);
+    } else {
+        user = user.urlToken;
     }
     startUserToken = user;
     urls = {
@@ -78,20 +82,18 @@ async function getFollowers() {
         for(let i = 0; i < users.length; i++) {
             await writeUser(users[i]);
         }
-
+        page++;
+        await getFollowers();
     } else {
 
         log(`\n该用户已经没有了关注者，将开始获取该用户关注的用户`);
 
         continueCrawl = false;
-        page = 0;
+        page = 1;
         users = [];
+        return;
     }
 
-    while (continueCrawl) {
-        page++;
-        await getFollowings();
-    }
 }
 
 async function getFollowings() {
@@ -112,6 +114,9 @@ async function getFollowings() {
         for(let i = 0; i < users.length; i++) {
             await writeUser(users[i]);
         }
+
+        page++;
+        await getFollowings();
     } else {
 
         log(`\n该用户已经没有关注的人了，将开始获取其他用户的数据\n\n\n\n\n\n`);
@@ -119,22 +124,23 @@ async function getFollowings() {
         initVariable();
         return await start();
     }
-
-    while (continueCrawl) {
-        page++;
-        await getFollowers();
-    }
 }
 
 async function updateStartUser() {
-    let exists = await UserModel.findOne({urlToken: startUser.urlToken}).exec();
+    let exists = await UserModel.findOne({urlToken: startUserToken}).exec();
     if(exists) {
 
         log(`\n开始更新用户 ${startUserToken} 的数据`);
 
-        await UserModel.update({urlToken: startUser.urlToken}, startUser).exec();
+        await UserModel.update({urlToken: startUserToken}, startUser).exec();
 
         log(chalk.green('更新完成'));
+    } else {
+        log(`\n开始保存用户 ${startUserToken} 的数据`);
+
+        await UserModel(startUser).save();
+
+        log(chalk.green('保存完成'));
     }
 }
 
@@ -180,7 +186,7 @@ function selectUser(html) {
     for(let key in data.entities.users) {
         let userData = data.entities.users[key];
         let item = {};
-        if(data.entities.users[key].urlToken === startUser) {
+        if(data.entities.users[key].urlToken === startUserToken) {
             startUser = {
                 name: userData.name,
                 userType: userData.userType,

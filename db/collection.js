@@ -14,15 +14,15 @@ const collection = new Schema({
     },
     // 回答数
     answerCount: {
-        type: String
+        type: Number
     },
     // 更新时间
     updateTime: {
-        type: String
+        type: Number
     },
     // 关注人数
     followerCount: {
-        type: String
+        type: Number
     },
     // 是否公共
     isPublic: {
@@ -36,7 +36,6 @@ const collection = new Schema({
         type: String
     },
     create_time: Date,
-
 });
 
 module.exports = mongoose.model('Collections',collection);

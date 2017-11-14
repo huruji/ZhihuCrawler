@@ -1,8 +1,8 @@
 
 const userConifg = [
   [
-    /*'zhang-jia-wei',*/
-    /*'WxzxzW',*/
+    'zhang-jia-wei',
+    'WxzxzW',
     /*'TuringDon',*/
     /*'roy-li',*/
     'kaifulee',
@@ -239,36 +239,8 @@ const otherUsers2 = [
 ]
 
 module.exports = {
- /* user: [*/
-    /*'huruji',
-    'lin-hua-luo-7',
-    'gejinyuban',
-    'mileijun',
-    'lijiyu',
-    'ibuick',
-    'lin-yi-chen-1029',
-    'wang-ni-ma-94',
-    'yanzhigao',
-    'excited-vczh',
-    'chen-da-hua-666',
-    'zhou-dong-yu-55-93',
-    'demonly',
-    'FakeLeo',
-    'demiflor'*/
-    /*'fouber',
-    'justjavac.com',
-    'evanyou',
-    'webryan',
-    'excited-vczh',
-    'a-jiu-1-1',
-    'lu-xing-jin-98-80',
-    'meng-qi-nian-10',
-    'mi-kou-68-8',
-    'Padmasambhava',
-    'hellohe-yao'*/
-   /* userConifg[0]
-  ],*/
-   user: ['ding-xiang-yi-sheng'],
-  cookie: 'd_c0="AJBCxvZD0guPTkngLE-drQYms0BvspxZbQA=|1495869238"; _zap=506942a8-e339-4825-9934-3165e55bc5e3; q_c1=5c22d050f56e49a99b105d1a0b5a1fb5|1504020455000|1495429662000; q_c1=5c22d050f56e49a99b105d1a0b5a1fb5|1506655660000|1495429662000; aliyungf_tc=AQAAAMplGmfGIAIAPnD5OiQm2MwUITmZ; r_cap_id="YmEyNDM0NTZiZmM3NGFiMTg3OWRmMzk3M2Y5YjFlMjk=|1507995904|9949a9049fde6780add3df68d2a399627ddf4234"; cap_id="ZmQxOTAzNzg1Nzg5NDdhMmFiMjNmYTFkZWIzM2IzOGI=|1507995903|9e0f0d63911dea93ff67594ee908b371a3db0448"; s-q=fafa; s-i=5; sid=q772kdq8; __utma=51854390.1268246023.1507995901.1507995901.1507995901.1; __utmc=51854390; __utmz=51854390.1507995901.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utmv=51854390.100-1|2=registration_date=20151023=1^3=entry_date=20151023=1; capsion_ticket="2|1:0|10:1508008754|14:capsion_ticket|44:YzBjODZjYTVlYzVjNGVjZjgzMDQ0NTU3MDczZTk0NmU=|90293f9a4a6ee2921c5241a9f28a0e4284ae818007127fbd2466a3e7c1fc886b"; z_c0="2|1:0|10:1508008756|4:z_c0|92:Mi4xRTFzM0FnQUFBQUFBa0VMRzlrUFNDeVlBQUFCZ0FsVk5OUEFKV2dCWERRbW1PdlllMlJ3cFNwU2s3WFg4RUtLdVV3|e488682ead27d325fe51cd96ad94c6282a77d4397f3bc656acaa25ba29c4d422"; _xsrf=58cd34bb-ef8b-4ae4-82b2-abcc1bf43633'
+  db:'mongodb://127.0.0.1/zhihu',
+   user: ['zhang-jia-wei'],
+   cookie: 'd_c0="AJBCxvZD0guPTkngLE-drQYms0BvspxZbQA=|1495869238"; _zap=506942a8-e339-4825-9934-3165e55bc5e3; q_c1=5c22d050f56e49a99b105d1a0b5a1fb5|1504020455000|1495429662000; q_c1=5c22d050f56e49a99b105d1a0b5a1fb5|1506655660000|1495429662000; aliyungf_tc=AQAAAMplGmfGIAIAPnD5OiQm2MwUITmZ; r_cap_id="YmEyNDM0NTZiZmM3NGFiMTg3OWRmMzk3M2Y5YjFlMjk=|1507995904|9949a9049fde6780add3df68d2a399627ddf4234"; cap_id="ZmQxOTAzNzg1Nzg5NDdhMmFiMjNmYTFkZWIzM2IzOGI=|1507995903|9e0f0d63911dea93ff67594ee908b371a3db0448"; s-q=fafa; s-i=5; sid=q772kdq8; __utma=51854390.1268246023.1507995901.1507995901.1507995901.1; __utmc=51854390; __utmz=51854390.1507995901.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utmv=51854390.100-1|2=registration_date=20151023=1^3=entry_date=20151023=1; capsion_ticket="2|1:0|10:1508008754|14:capsion_ticket|44:YzBjODZjYTVlYzVjNGVjZjgzMDQ0NTU3MDczZTk0NmU=|90293f9a4a6ee2921c5241a9f28a0e4284ae818007127fbd2466a3e7c1fc886b"; z_c0="2|1:0|10:1508008756|4:z_c0|92:Mi4xRTFzM0FnQUFBQUFBa0VMRzlrUFNDeVlBQUFCZ0FsVk5OUEFKV2dCWERRbW1PdlllMlJ3cFNwU2s3WFg4RUtLdVV3|e488682ead27d325fe51cd96ad94c6282a77d4397f3bc656acaa25ba29c4d422"; _xsrf=58cd34bb-ef8b-4ae4-82b2-abcc1bf43633'
 };
 

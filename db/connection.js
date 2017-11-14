@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-
+const db = require('./../config').db;
 module.exports = async () => new Promise((resolve, reject) => {
-  mongoose.connect('mongodb://127.0.0.1/zhihupeople', {
+  mongoose.connect(db, {
     userMongoClient: true
   }, (error) => {
     if (error) {
