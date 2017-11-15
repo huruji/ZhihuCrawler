@@ -5,7 +5,7 @@ const path = require('path');
 let perfect, live, column, collection, topic, question;
 
 
-const user = spawn('node', ['user.js'], {
+const user = spawn('node', ['--harmony','user.js'], {
     cwd: __dirname,
     stdio: 'inherit'
 });
@@ -16,20 +16,20 @@ user.on('error', function(err) {
     process.exit();
 });
 
-log('10分钟后将开始完善用户信息\n');
+log('1分钟后将开始完善用户信息\n');
 
-log('20分钟后将开始爬取问题\n');
+log('2分钟后将开始爬取问题\n');
 
-log('30分钟后将开始爬取主题、专栏、收藏夹\n');
+log('3分钟后将开始爬取主题、专栏、收藏夹\n');
 
-log('40分钟后将开始爬取Live');
+log('4分钟后将开始爬取Live');
 
 
 
 
 setTimeout(() => {
     startPerfect();
-}, 1000 * 60 * 10);
+}, 1000 * 60 * 1);
 
 /*setTimeout(() => {
     startQuestion();
@@ -37,19 +37,19 @@ setTimeout(() => {
 
 setTimeout(() => {
     startTopic();
-}, 1000 * 60 * 20);
+}, 1000 * 60 * 2);
 
 setTimeout(() => {
     startColumn();
-}, 1000 * 60 * 30);
+}, 1000 * 60 * 3);
 
 setTimeout(() => {
     startCollection();
-}, 1000 * 60 * 30);
+}, 1000 * 60 * 3);
 
 setTimeout(() => {
     startLive();
-}, 1000 * 60 * 40);
+}, 1000 * 60 * 4);
 
 
 function startQuestion() {

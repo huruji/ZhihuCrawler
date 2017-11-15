@@ -4,4 +4,7 @@
 
 获取回答问题数量前10的用户  db.users.find({"isOrg": false}).sort({"answerCount":-1}).limit(10)
 
-统计用户性别       db.users.aggregate([$group: {ge}])
+统计用户性别       db.users.aggregate([{$match: {gender: {$exists: true}}},{$group: {_id:"$gender", "total": {$sum:1}}}])
+
+
+获取
