@@ -50,6 +50,7 @@ async function getStartUser() {
     } else {
         user = user.urlToken;
     }
+    user = getRandom(CONFIG_USER);
     startUserToken = user;
     urls = {
         following: `https://www.zhihu.com/people/${startUserToken}/following`,
@@ -175,7 +176,7 @@ function selectUser(html) {
 
     let keys = Object.keys(data.entities.users);
 
-    if(keys.length===0 ||(keys.length === 1 && keys.includes(start))){
+    if(keys.length===0 ||(keys.length === 1 && keys.includes(startUserToken))){
         console.log('\n');
         console.log('\n');
         console.log('\n');
