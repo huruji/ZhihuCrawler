@@ -43,14 +43,14 @@ function initVariable() {
 
 async function getStartUser() {
     log('-----------开始获取爬虫开始的用户-----------');
-    let user = await UserModel.findOne({'columnsCount': {$exists: false}}).skip(random(100)).exec();
+    let user = await UserModel.findOne({'columnsCount': {$exists: false}}).sort({"followerCount":-1}).exec();
     console.log(user);
     if(!user) {
         user = getRandom(CONFIG_USER);
     } else {
         user = user.urlToken;
     }
-    user = getRandom(CONFIG_USER);
+    /*user = getRandom(CONFIG_USER);*/
     startUserToken = user;
     urls = {
         following: `https://www.zhihu.com/people/${startUserToken}/following`,
