@@ -8,7 +8,11 @@
     "server": " node --harmony ./server/server.js",
     "start": "node --harmony index.js",
     "crawler": "node --harmony ./crawlers/index.js",
-    "user": "node --harmony ./crawlers/user.js"
+    "user": "node --harmony ./crawlers/user.js",
+    "topic": "node --harmony ./crawlers/topic.js",
+    "perfect": "node --harmony ./crawlers/perfectUser.js",
+    "live": "node --harmony ./crawlers/live.js",
+    "collection": "node --harmony ./crawlers/collection.js"
   },
   "keywords": [],
   "author": "",
