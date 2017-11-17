@@ -59,7 +59,7 @@ async function init() {
     const db = await QuestionModel.find({_id: id}).exec();
     if(db.length > 0) {
         console.log(`问题 ${id} ${db[0].title} 已经存在数据库中`);
-        console.log('\n')
+        console.log('\n');
         return 0;
     }
     const html = await getInfo();

@@ -49,6 +49,10 @@ const QuestionModel = new Schema({
     questionType: String,
     reviewInfo: Object,
     status: Object,
+    updatedAt: {
+        type: Number,
+        default: parseInt(new Date().getTime() / 1000)
+    }
 });
 
 module.exports = mongoose.model('Questions', QuestionModel);
