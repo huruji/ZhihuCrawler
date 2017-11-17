@@ -193,9 +193,9 @@ function selectUser(html) {
         let item = {};
         if(data.entities.users[key].urlToken === startUserToken) {
             startUser = {
+                _id: userData.urlToken,
                 name: userData.name,
                 userType: userData.userType,
-                id: userData.id,
                 favoriteCount: userData.favoriteCount,
                 voteupCount: userData.voteupCount,
                 commercialQuestionCount: userData.commercialQuestionCount,
@@ -210,7 +210,7 @@ function selectUser(html) {
                 avatarUrlTemplate: userData.employments,
                 followingTopicCount: userData.followingTopicCount,
                 description: userData.description,
-                business: userData.business,
+                business: userData.business.name,
                 avatarUrl: userData.avatarUrl,
                 columnsCount: userData.columnsCount,
                 thankToCount: userData.thankToCount,
@@ -219,27 +219,29 @@ function selectUser(html) {
                 answerCount: userData.answerCount,
                 articlesCount: userData.articlesCount,
                 questionCount: userData.questionCount,
-                locations: userData.locations,
+                locations: userData.locations[0] ? userData.locations[0].name : '',
                 url: userData.url,
                 followingQuestionCount: userData.followingQuestionCount,
                 thankedCount: userData.thankedCount,
-                gender: userData.gender
+                gender: userData.gender,
+                isActive: userData.isActive,
+                signUpYear: new Date(userData.isActive * 1000).getFullYear()
             };
         } else {
             item = {
-                avatarUrlTemplate: userData.avatarUrlTemplate,
-                userType: userData.userType,
-                answerCount: userData.answerCount,
-                url: userData.url,
-                urlToken: userData.urlToken,
-                id: userData.id,
-                articlesCount: userData.articlesCount,
+                _id: userData.urlToken,
                 name: userData.name,
+                userType: userData.userType,
                 headline: userData.headline,
-                gender: userData.gender,
-                avatarUrl: userData.avatarUrl,
+                urlToken: userData.urlToken,
                 isOrg: userData.isOrg,
-                followerCount: userData.followerCount
+                followerCount: userData.followerCount,
+                avatarUrlTemplate: userData.avatarUrlTemplate,
+                avatarUrl: userData.avatarUrl,
+                answerCount: userData.answerCount,
+                articlesCount: userData.articlesCount,
+                url: userData.url,
+                gender: userData.gender
             };
             user.push(item);
         }

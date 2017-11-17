@@ -78,11 +78,6 @@ const UserSchema = new Schema({
     signUpYear: Number,
     // 最近一次活跃时间
     lastActive: Number,
-    // 创建时间
-    createdAt: {
-        type: Number,
-        default: parseInt(new Date().getTime() / 1000)
-    },
     // 更新时间
     updatedAt: {
         type: Number,
