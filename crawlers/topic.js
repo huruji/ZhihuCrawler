@@ -30,7 +30,7 @@ async function start() {
 async function write() {
     for(let key in topic) {
         let currentTopic = topic[key];
-        let existsTopic = await TopicModel.find({topicId: currentTopic.id}).exec();
+        let existsTopic = await TopicModel.find({_id: currentTopic.id}).exec();
 
         if(existsTopic.length === 0) {
             let id = currentTopic.id;
@@ -44,6 +44,7 @@ async function write() {
             });
             let followers = selectFollowers(topicHotHtml);
             let saveTopic = {
+                _id: id,
                 name: currentTopic.name,
                 avatarUrl: currentTopic.avatarUrl,
                 introduction: currentTopic.introduction,

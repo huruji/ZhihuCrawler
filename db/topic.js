@@ -3,39 +3,35 @@ const Schema = mongoose.Schema;
 mongoose.Promise = Promise;
 
 const topic = new Schema({
+    _id:{
+        type: String,
+        required: true,
+        unique: true,
+        index:true
+    },
     // 话题名
     name: {
         type: String,
-        index: true,
         required: true
     },
     // 话题图片
-    avatarUrl: {
-        type: String
-    },
+    avatarUrl: String,
     // 话题介绍
-    introduction: {
-        type: String
-    },
+    introduction: String,
     // 话题api的url
-    url: {
-        type: String
-    },
+    url: String,
     // 话题摘记
-    excerpt: {
-        type: String
-    },
+    excerpt: String,
     // 话题ID
-    topicId: {
-        type: String
-    },
+    topicId: String,
     // 话题关注者人数
-    followers: {
-        type: Number
-    },
+    followers: Number,
     // 话题的跳转者
-    find_by_user: {
-        type: String
+    find_by_user: String,
+    // 更新时间
+    updatedAt: {
+        type: Number,
+        default: parseInt(new Date().getTime() / 1000)
     }
 });
 
