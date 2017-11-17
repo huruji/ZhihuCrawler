@@ -59,9 +59,10 @@ async function getLive(){
 
     for(let i = 0; i < resData.length; i++) {
         let liveData = resData[i];
-        let exists = await LiveModel.find({id: liveData.id}).exec();
+        let exists = await LiveModel.find({_id: liveData.id}).exec();
         if(exists.length===0) {
             let save = {
+                _id: liveData.id,
                 subject: liveData.subject,
                 score: liveData.review.score,
                 speaker: liveData.speaker,
