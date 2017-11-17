@@ -3,103 +3,52 @@ const Schema = mongoose.Schema;
 mongoose.Promise = Promise;
 
 const QuestionModel = new Schema({
-    // 是否可评论
-    adminClosedComment: {
-        type: Boolean
-    },
-    // 答案个数
-    answerCount: {
-        type:Number
-    },
-    // 提问者
-    author: {
-        type: Object
-    },
-    //
-    canComment: {
-        type: Object
-    },
-    // 被折叠的回答
-    collapsedAnswerCount: {
-        type: Number
-    },
-    // 评论数
-    commentCount: {
-        type: Number
-    },
-    // 评论权限
-    commentPermission: {
-        type: String
-    },
-    // 创建
-    created: {
-        type: Number
-    },
-    // 问题描述
-    detail: {
-        type: String
-    },
-    editableDetail: {
-        type: String
-    },
-    excerpt: {
-        type: String
-    },
-    // 关注问题人数
-    followerCount: {
-        type: Number
-    },
-    //
-    hasPublishingDraft: {
-        type: Boolean
-    },
-    id: {
-        type: Number,
-    },
-    isEditable: {
-        type: Boolean
-    },
-    isMuted: {
-        type: Boolean
-    },
-    isNormal: {
-        type: Boolean
-    },
-    questionType: {
-        type: String
-    },
-    relationship: {
-        type: Object
-    },
-    reviewInfo: {
-        type: Object
-    },
-    status: {
-        type:Object
+    _id: {
+        type: String,
+        required: true,
+        unique: true,
+        index: true
     },
     // 问题标题
     title: {
         type: String,
         required: true
     },
-    // 话题
-    topics: {
-        type: Array
-    },
-    type: {
-        type: String
-    },
     // 更新时间
-    updatedTime: {
-        type: Number
-    },
-    url: {
-        type: String
-    },
+    updatedTime:Number,
+    url: String,
     // 浏览数
-    visitCount: {
-        type: Number
-    }
+    visitCount: Number,
+    // 是否可评论
+    adminClosedComment: Boolean,
+    // 答案个数
+    answerCount: Number,
+    // 提问者
+    author: Object,
+    //
+    canComment: Object,
+    // 被折叠的回答
+    collapsedAnswerCount: Number,
+    // 评论数
+    commentCount: Number,
+    // 评论权限
+    commentPermission: String,
+    // 创建
+    created: Number,
+    // 问题描述
+    detail: String,
+    editableDetail: String,
+    excerpt: String,
+    // 关注问题人数
+    followerCount: Number,
+    //
+    hasPublishingDraft: Boolean,
+    isEditable: Boolean,
+    isMuted: Boolean,
+    isNormal: Boolean,
+    questionType: String,
+    reviewInfo: Object,
+    status: Object,
 });
 
 module.exports = mongoose.model('Questions', QuestionModel);

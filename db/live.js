@@ -30,6 +30,11 @@ const live = new Schema({
     seats: Number,
     // live状态
     status: String,
+    // 更新时间
+    updatedAt: {
+        type: Number,
+        default: parseInt(new Date().getTime() / 1000)
+    }
 });
 
 module.exports = mongoose.model('Lives',live);
