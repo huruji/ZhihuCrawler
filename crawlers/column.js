@@ -30,7 +30,7 @@ async function start() {
 async function write() {
     for(let key in column) {
         let currentColumn = column[key];
-        let existsColumn = await ColumnModel.find({topicId: currentColumn.id}).exec();
+        let existsColumn = await ColumnModel.find({_id: currentColumn.id}).exec();
 
         if(existsColumn.length === 0) {
             let id = currentColumn.id;
@@ -46,6 +46,7 @@ async function write() {
 
             let intro = selectIntro(columnAboutHtml);
             let saveColumn = {
+                _id: currentColumn.id,
                 title: currentColumn.title,
                 intro: intro,
                 imageUrl: currentColumn.imageUrl,

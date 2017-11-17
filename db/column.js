@@ -3,53 +3,42 @@ const Schema = mongoose.Schema;
 mongoose.Promise = Promise;
 
 const column = new Schema({
+    _id: {
+        type: String,
+        required: true,
+        unique: true,
+        index: true
+    },
     // 专栏名
     title: {
         type: String,
         required: true
     },
     // 专栏介绍
-    intro: {
-        type: String
-    },
+    intro: String,
     // 专栏图片
-    imageUrl: {
-        type: String
-    },
+    imageUrl: String,
     // 专栏ID
-    id: {
-        type: String
-    },
+    id: String,
     // 关注人数
-    followers: {
-        type: Number
-    },
+    followers: Number,
     // 文章数量
-    articlesCount: {
-        type: Number
-    },
+    articlesCount: Number,
     // 允许评论
-    commentPermission: {
-        type: String
-    },
+    commentPermission: String,
     // API的URL
-    url: {
-        type: String
-    },
+    url: String,
     // 专栏作者
-    author: {
-        type: Object
-    },
+    author: Object,
     // 更新时间
-    updated: {
-        type: String
-    },
-    //
-    find_by_user: {
-        type: String
-    },
-    create_time: Date,
-
+    updated: Number,
+    // 从哪个用户获取的
+    find_by_user: String,
+    // 更新时间
+    updatedAt: {
+        type: Number,
+        default: parseInt(new Date().getTime() / 1000)
+    }
 });
 
 module.exports = mongoose.model('Columns',column);

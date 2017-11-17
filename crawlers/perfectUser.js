@@ -2,18 +2,11 @@ const mongoConnection = require('./../db/connection');
 const UserModel = require('./../db/user');
 const request = require('superagent');
 const cheerio = require('cheerio');
-const spawn = require('child_process').spawnSync;
-const path = require('path');
-const fs = require('fs');
+
 let skip = 12;
 async function getUser() {
     let user = UserModel.findOne({'columnsCount': {$exists: false}}).skip(skip).exec();
     return user;
-}
-
-async function getInfo(token) {
-    let url = `https://www.zhihu.com/people/${token}/activities`;
-    return request.get(url).then(res => res.text);
 }
 
 async function write(html, token) {
