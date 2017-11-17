@@ -3,133 +3,90 @@ const Schema = mongoose.Schema;
 mongoose.Promise = Promise;
 
 const UserSchema = new Schema({
+    _id:{
+        type: String,
+        required: true,
+        unique: true,
+        index:true
+    },
     // 姓名
     name: {
         type: String,
-        index: true,
-        require: true,
+        required: true,
     },
     // 类型
-    userType: {
-        type: String
-    },
-    id: {
-        type: String
-    },
-    //
-    favoriteCount:{
-        type: Number
-    },
+    userType: String,
+    // 自己收藏夹数
+    favoriteCount: Number,
     // 获得赞同数
-    voteupCount: {
-        type: Number
-    },
-    //
-    commercialQuestionCount: {
-        type: Number
-    },
+    voteupCount: Number,
+    // 广告问题数
+    commercialQuestionCount: Number,
     // 关注的专栏数
-    followingColumnsCount: {
-        type: Number
-    },
+    followingColumnsCount: Number,
     // 个性签名
-    headline: {
-        type: String
-    },
+    headline: String,
     // token
-    urlToken: {
-        type: String
-    },
+    urlToken: String,
     // 参与的live数量
-    participatedLiveCount: {
-        type: Number
-    },
+    participatedLiveCount: Number,
     // 被收藏数
-    favoritedCount: {
-        type: Number
-    },
+    favoritedCount: Number,
     // 是否是机构
-    isOrg: {
-        type: Boolean
-    },
+    isOrg: Boolean,
     // 关注者
-    followerCount: {
-        type: Number
-    },
+    followerCount: Number,
     // 工作
-    employments: {
-        type: Array
-    },
+    employments: Array,
     // 头像模板
-    avatarUrlTemplate: {
-        type: String
-    },
+    avatarUrlTemplate: String,
     // 关注的话题数量
-    followingTopicCount: {
-        type: Number
-    },
+    followingTopicCount: Number,
     // 个性描述
-    description: {
-        type: String
-    },
+    description: String,
     // 工作
-    business: {
-        type: Object
-    },
+    business: String,
     // 头像
-    avatarUrl: {
-        type: String
-    },
+    avatarUrl: String,
     // 专栏数量
-    columnsCount: {
-        type: Number
-    },
-    //
-    thankToCount: {
-        type: Number
-    },
+    columnsCount: Number,
+    // 感谢他人数
+    thankToCount: Number,
     // 荣誉
-    badge: {
-        type: Array
-    },
+    badge: Array,
     // 封面
-    coverUrl: {
-        type: String
-    },
+    coverUrl: String,
     // 回答问题数量
-    answerCount: {
-        type: Number
-    },
+    answerCount: Number,
     // 文章数
-    articlesCount: {
-        type: Number
-    },
+    articlesCount: Number,
     // 提问数
-    questionCount: {
-        type: Number
-    },
+    questionCount: Number,
     // 居住地
-    locations: {
-        type: Array
-    },
+    locations: String,
     // api的url
-    url: {
-        type: String
-    },
+    url: String,
     // 关注的问题数量
-    followingQuestionCount: {
-        type: Number
-    },
+    followingQuestionCount: Number,
     // 获得感谢数量
-    thankedCount: {
-        type: Number
-    },
+    thankedCount: Number,
     // 性别
-    gender: {
-        type: Number
+    gender: Number,
+    // 注册时间
+    isActive: Number,
+    // 注册年份
+    signUpYear: Number,
+    // 最近一次活跃时间
+    lastActive: Number,
+    // 创建时间
+    createdAt: {
+        type: Number,
+        default: parseInt(new Date().getTime() / 1000)
     },
-    answers: {
-        type: Object
+    // 更新时间
+    updatedAt: {
+        type: Number,
+        default: parseInt(new Date().getTime() / 1000)
     }
 });
 
