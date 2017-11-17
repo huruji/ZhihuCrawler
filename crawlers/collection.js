@@ -29,10 +29,11 @@ async function start() {
 async function write() {
     for(let key in collections) {
         let currentCollection = collections[key];
-        let existsCollection = await CollectionModel.find({id: currentCollection.id}).exec();
+        let existsCollection = await CollectionModel.find({_id: currentCollection.id}).exec();
 
         if(existsCollection.length === 0) {
             let save = {
+                _id: currentCollection.id,
                 title: currentCollection.title,
                 url: currentCollection.url,
                 answerCount: currentCollection.answerCount,
