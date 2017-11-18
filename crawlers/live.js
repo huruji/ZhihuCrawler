@@ -11,12 +11,8 @@ const skipFile = path.join(__dirname,'../skipConfig.json');
 
 let skip;
 let user;
-let pageSkip = 1;
-let collections = {};
 let cookie = '';
-let offset = 0;
 
-const liveIndexUlr = 'https://www.zhihu.com/lives/';
 
 let authorization = 'oauth 8274ffb553d511e6a7fdacbc328e205d';
 

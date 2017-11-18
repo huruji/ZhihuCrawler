@@ -1,69 +1,122 @@
 const mongoConnection = require('./../db/connection');
-const QuestionModel = require('./../db/question');
+const CollectionModel = require('./../db/collection');
+const UserModel = require('./../db/user');
 const request = require('superagent');
 const cheerio = require('cheerio');
+const jsonfile = require('jsonfile');
+const path = require('path');
 
-const id = process.argv[2];
-const url = `https://www.zhihu.com/question/${id}`;
+const skipFile = path.join(__dirname,'../skipConfig.json');
 
-async function getInfo() {
-    return request.get(url).then(res => res.text);
-}
+let skip;
+let user;
+let pageSkip = 1;
+let collections = {};
 
-async function write(html, token) {
-    console.log('获取到了问题页面');
-    let $ = cheerio.load(html);
-    let data = $('#data').attr('data-state');
-    if(!data) {
-        return;
-    }
-    let jsonData = JSON.parse(data.toString());
-    let question = jsonData.entities.questions[id];
-    let saveData = {
-        _id: question.id,
-        title: question.title,
-        updatedTime: question.updatedTime,
-        url: question.url,
-        visitCount: question.visitCount,
-        adminClosedComment: question.adminClosedComment,
-        answerCount: question.answerCount,
-        author: question.author,
-        canComment: question.canComment,
-        collapsedAnswerCount: question.collapsedAnswerCount,
-        commentCount: question.commentCount,
-        commentPermission: question.commentPermission,
-        created: question.created,
-        detail: question.detail,
-        editableDetail: question.editableDetail,
-        excerpt: question.excerpt,
-        followerCount: question.followerCount,
-        hasPublishingDraft: question.hasPublishingDraft,
-        isEditable: question.isEditable,
-        isMuted: question.isMuted,
-        isNormal: question.isNormal,
-        questionType: question.questionType,
-        reviewInfo:  question.reviewInfo,
-        status: question.status,
-    };
 
-    console.log('\n');
-    console.log(`开始保存问题 ${id} ${question.title} `);
-    await QuestionModel(saveData).save();
-    console.log(`问题 ${id} ${question.title} 保存完成`);
-    console.log('\n');
-    return;
-}
-
-async function init() {
+(async function init() {
     await mongoConnection();
-    const db = await QuestionModel.find({_id: id}).exec();
-    if(db.length > 0) {
-        console.log(`问题 ${id} ${db[0].title} 已经存在数据库中`);
-        console.log('\n');
-        return 0;
-    }
-    const html = await getInfo();
-    await write(html);
-    return 0;
+
+    skip = parseInt(jsonfile.readFileSync(skipFile).questionSkip);
+    await start();
+})();
+
+async function start() {
+    await findUserColleaction();
+    await write();
 }
-init().then(() => process.exit(0));
+
+async function write() {
+    for(let key in collections) {
+        let currentCollection = collections[key];
+        let existsCollection = await CollectionModel.find({_id: currentCollection.id}).exec();
+
+        if(existsCollection.length === 0) {
+            let save = {
+                _id: currentCollection.id,
+                title: currentCollection.title,
+                url: currentCollection.url,
+                answerCount: currentCollection.answerCount,
+                updateTime: currentCollection.updateTime,
+                followerCount: currentCollection.followerCount,
+                isPublic: currentCollection.isPublic,
+                id: currentCollection.id,
+                find_by_user: user.urlToken
+            };
+            console.log(`开始保存`);
+            await CollectionModel(save).save();
+            console.log(`保存成功`);
+        } else {
+            console.log(`收藏夹 ${currentCollection.title} 已经存在数据库中`);
+            console.log('\n');
+        }
+    }
+    pageSkip++;
+    await start();
+}
+
+async function selectCollections(html) {
+    const $ = cheerio.load(html);
+    if( !$('#data').attr('data-state')) {
+        return await errHandle();
+    }
+    const data = JSON.parse($('#data').attr('data-state').toString());
+    return data.entities.favlists;
+}
+
+async function findUserColleaction() {
+    while(!user) {
+        console.log(`从数据库中抓取用户`);
+        console.log(`skip的值是 ${skip}`);
+
+        user = await UserModel.findOne({}).skip(skip).exec();
+
+        console.log(`抓取到用户 ${user.urlToken}`);
+
+        let exists = await CollectionModel.find({"find_by_user": user.urlToken}).exec().length;
+        if(exists) {
+            user = '';
+            skip++;
+        }
+    }
+
+    console.log(`开始获取用户${user.urlToken}的关注收藏夹`);
+    console.log('\n');
+
+    const userCollectionUrl = `https://www.zhihu.com/people/${user.urlToken}/following/collections?page=${pageSkip}`;
+    const userCollectionHtml = await request.get(userCollectionUrl).then(res => res.text).catch( async err => {
+        await errHandle();
+    });
+
+    collections = await selectCollections(userCollectionHtml);
+
+
+    while(Object.keys(collections).length < 1) {
+        await noDataHandle();
+    }
+
+    console.log(`已经获取到收藏夹`);
+    console.log(Object.keys(collections).length);
+    console.log('\n');
+}
+
+async function errHandle() {
+    console.log("出错了，重新抓取");
+    await reStart();
+}
+
+async function noDataHandle() {
+    console.log("没有关注的收藏夹了");
+    await reStart();
+}
+
+async function reStart() {
+    skip++;
+    pageSkip = 0;
+    user = '';
+    collections = {};
+    const skipData = jsonfile.readFileSync(skipFile);
+    skipData.collectionSkip = Number(skipData.collectionSkip) + 1;
+    jsonfile.writeFileSync(skipFile, skipData);
+    await findUserColleaction();
+}

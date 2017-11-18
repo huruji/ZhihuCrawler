@@ -76,8 +76,6 @@ function selectIntro(html) {
     return $('.AboutIndex-descriptionWrapper p').text();
 }
 
-
-
 function selectColumns(html) {
     const $ = cheerio.load(html);
     const data = JSON.parse($('#data').attr('data-state').toString());

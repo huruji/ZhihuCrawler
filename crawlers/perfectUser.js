@@ -72,7 +72,7 @@ async function write(html, token) {
             signUpYear: new Date(userData.isActive * 1000).getFullYear(),
             lastActive: lastActive
         };
-        await UserModel.update({urlToken: token},saveData).exec().then(()=>{},(err)=>{
+        await UserModel.update({_id: token},saveData).exec().then(()=>{},(err)=>{
             console.log(err);
         });
         console.log(`用户 ${token} 的数据更新完成`);
