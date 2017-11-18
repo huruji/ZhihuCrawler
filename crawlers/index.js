@@ -31,9 +31,9 @@ setTimeout(() => {
     startPerfect();
 }, 1000 * 60 * 1);
 
-/*setTimeout(() => {
+setTimeout(() => {
     startQuestion();
-}, 1000 * 60 * 20);*/
+}, 1000 * 60 * 20);
 
 setTimeout(() => {
     startTopic();

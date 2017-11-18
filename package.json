@@ -9,7 +9,7 @@
     "start": "node --harmony index.js",
     "crawler": "node --harmony ./crawlers/index.js",
     "user": "node --harmony ./crawlers/user.js",
-    "topic": "node --harmony ./crawlers/topic.js",
+    "topic": "node --harmony ./crawlers/subCrawler.js topic",
     "perfect": "node --harmony ./crawlers/perfectUser.js",
     "live": "node --harmony ./crawlers/live.js",
     "collection": "node --harmony ./crawlers/collection.js"

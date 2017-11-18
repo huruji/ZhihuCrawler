@@ -239,7 +239,7 @@ const otherUsers2 = [
 ]
 
 module.exports = {
-  db:'mongodb://127.0.0.1/zhihu',
+  db:'mongodb://127.0.0.1/zhihuTemp',
    user: ['xi-duo-meng',
        'sizhuren',
        'zhi-hu-dian-zi-shu',
