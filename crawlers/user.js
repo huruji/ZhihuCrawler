@@ -128,7 +128,7 @@ async function getFollowings() {
 }
 
 async function updateStartUser() {
-    let exists = await UserModel.findOne({urlToken: startUserToken}).exec();
+    let exists = await UserModel.findOne({_id: startUserToken}).exec();
     if(exists) {
 
         log(`\n开始更新用户 ${startUserToken} 的数据`);
@@ -147,7 +147,7 @@ async function updateStartUser() {
 
 async function writeUser(user) {
 
-    let exists = await UserModel.findOne({urlToken: user.urlToken}).exec();
+    let exists = await UserModel.findOne({_id: user.urlToken}).exec();
     if(!exists) {
 
         log(`\n开始保存 ${user.name} ${user.urlToken} 的数据`);
