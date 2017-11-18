@@ -4,6 +4,7 @@ const UserModel = require('./../db/user');
 const SkipModel = require('./../db/skip');
 const request = require('superagent');
 const cheerio = require('cheerio');
+const log = console.log;
 
 let skip;
 let user;
@@ -31,8 +32,8 @@ async function write() {
         if(existsColumn.length === 0) {
             let id = currentColumn.id;
 
-            console.log(`抓取专栏 ${currentColumn.title} 的页面`);
-            console.log('\n');
+            log(`抓取专栏 ${currentColumn.title} 的页面`);
+            log('\n');
 
             let columnAboutUrl = `https://zhuanlan.zhihu.com/${id}/about`;
 
@@ -55,12 +56,12 @@ async function write() {
                 updated: currentColumn.updated,
                 find_by_user: user.urlToken
             };
-            console.log(`开始保存`);
+            log(`开始保存`);
             await ColumnModel(saveColumn).save();
-            console.log(`保存成功`);
+            log(`保存成功`);
         } else {
-            console.log(`专栏 ${currentColumn.title} 已经存在数据库中`);
-            console.log('\n');
+            log(`专栏 ${currentColumn.title} 已经存在数据库中`);
+            log('\n');
         }
     }
     pageSkip++;
@@ -80,12 +81,12 @@ function selectColumns(html) {
 
 async function findUserColumns() {
     while(!user) {
-        console.log(`从数据库中抓取用户`);
-        console.log(`skip的值是 ${skip}`);
+        log(`从数据库中抓取用户`);
+        log(`skip的值是 ${skip}`);
 
         user = await UserModel.findOne({}).skip(skip).exec();
 
-        console.log(`抓取到用户 ${user.urlToken}`);
+        log(`抓取到用户 ${user.urlToken}`);
 
         let exists = await ColumnModel.find({"find_by_user": user.urlToken}).exec().length;
         if(exists) {
@@ -94,8 +95,8 @@ async function findUserColumns() {
         }
     }
 
-    console.log(`开始获取用户 ${user.urlToken} 的关注专栏`);
-    console.log('\n');
+    log(`开始获取用户 ${user.urlToken} 的关注专栏`);
+    log('\n');
 
     const userTopicUrl = `https://www.zhihu.com/people/${user.urlToken}/following/columns?page=${pageSkip}`;
 
@@ -109,18 +110,18 @@ async function findUserColumns() {
         await noColumnHandle();
     }
 
-    console.log(`已经获取到专栏`);
-    console.log(Object.keys(column).length);
-    console.log('\n');
+    log(`已经获取到专栏`);
+    log(Object.keys(column).length);
+    log('\n');
 }
 
 async function errHandle() {
-    console.log('出错了，重新抓取');
+    log('出错了，重新抓取');
     await reStart();
 }
 
 async function noColumnHandle() {
-    console.log(`没有关注的专栏了`);
+    log(`没有关注的专栏了`);
     await reStart();
 }
 

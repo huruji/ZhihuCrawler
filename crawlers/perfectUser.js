@@ -2,6 +2,7 @@ const mongoConnection = require('./../db/connection');
 const UserModel = require('./../db/user');
 const request = require('superagent');
 const cheerio = require('cheerio');
+const log = console.log;
 
 let skip = 12;
 async function getUser() {
@@ -11,18 +12,18 @@ async function getUser() {
 
 async function write(html, token) {
     skip++;
-    console.log(`获取到了用户 ${token} 页面`);
+    log(`获取到了用户 ${token} 页面`);
     let $ = cheerio.load(html);
     let data = $('#data').attr('data-state');
-    console.log('获取到了data');
+    log('获取到了data');
     if(!data) {
-        console.log(`用户 ${token} 数据不存在`);
+        log(`用户 ${token} 数据不存在`);
         skip++;
         return await start();
     }
-    console.log(data);
+    log(data);
     data = JSON.parse(data.toString());
-    console.log('\n');
+    log('\n');
 
     if(Object.keys(data.entities.users).length === 0) {
         setTimeout(function() {
@@ -34,8 +35,8 @@ async function write(html, token) {
     if(data.entities.users[token]) {
         let userData = data.entities.users[token];
         let lastActive =  Object.keys(data.entities.activities).length > 0 ? transActivities(Object.keys(data.entities.activities)) : 0;
-        console.log('\n');
-        console.log(`开始更新用户 ${token} 的数据`);
+        log('\n');
+        log(`开始更新用户 ${token} 的数据`);
         let saveData = {
             _id: userData.urlToken,
             name: userData.name,
@@ -73,10 +74,10 @@ async function write(html, token) {
             lastActive: lastActive
         };
         await UserModel.update({_id: token},saveData).exec().then(()=>{},(err)=>{
-            console.log(err);
+            log(err);
         });
-        console.log(`用户 ${token} 的数据更新完成`);
-        console.log('\n');
+        log(`用户 ${token} 的数据更新完成`);
+        log('\n');
     }
 
     skip++;
@@ -99,12 +100,12 @@ function start () {
     (async() => {
         let users = await getUser();
 
-        console.log(users.urlToken);
+        log(users.urlToken);
         let url = 'https://www.zhihu.com/people/' + users.urlToken + '/activities';
         let html = await request.get(url).set('Referer', `https://www.zhihu.com/people/${users.urlToken}/following`).then(res => {
-            console.log('success');
+            log('success');
             return res.text},(err)=>{
-            console.log('errrrrrrrrrr');
+            log('errrrrrrrrrr');
             skip++;
             start();
         });

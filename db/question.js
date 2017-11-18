@@ -49,6 +49,7 @@ const QuestionModel = new Schema({
     questionType: String,
     reviewInfo: Object,
     status: Object,
+    find_by_user: String,
     updatedAt: {
         type: Number,
         default: parseInt(new Date().getTime() / 1000)

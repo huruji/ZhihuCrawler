@@ -4,10 +4,7 @@ const UserModel = require('./../db/user');
 const SkipModel = require('./../db/skip');
 const request = require('superagent');
 const cheerio = require('cheerio');
-const jsonfile = require('jsonfile');
-const path = require('path');
-
-const skipFile = path.join(__dirname,'../skipConfig.json');
+const log = console.log;
 
 let skip;
 let user;
@@ -44,12 +41,12 @@ async function write() {
                 id: currentCollection.id,
                 find_by_user: user.urlToken
             };
-            console.log(`开始保存`);
+            log(`开始保存`);
             await CollectionModel(save).save();
-            console.log(`保存成功`);
+            log(`保存成功`);
         } else {
-            console.log(`收藏夹 ${currentCollection.title} 已经存在数据库中`);
-            console.log('\n');
+            log(`收藏夹 ${currentCollection.title} 已经存在数据库中`);
+            log('\n');
         }
     }
     pageSkip++;
@@ -68,12 +65,12 @@ async function selectCollections(html) {
 
 async function findUserColleaction() {
     while(!user) {
-        console.log(`从数据库中抓取用户`);
-        console.log(`skip的值是 ${skip}`);
+        log(`从数据库中抓取用户`);
+        log(`skip的值是 ${skip}`);
 
         user = await UserModel.findOne({}).skip(skip).exec();
 
-        console.log(`抓取到用户 ${user.urlToken}`);
+        log(`抓取到用户 ${user.urlToken}`);
 
         let exists = await CollectionModel.find({"find_by_user": user.urlToken}).exec().length;
         if(exists) {
@@ -82,8 +79,8 @@ async function findUserColleaction() {
         }
     }
 
-    console.log(`开始获取用户${user.urlToken}的关注收藏夹`);
-    console.log('\n');
+    log(`开始获取用户${user.urlToken}的关注收藏夹`);
+    log('\n');
 
     const userCollectionUrl = `https://www.zhihu.com/people/${user.urlToken}/following/collections?page=${pageSkip}`;
     const userCollectionHtml = await request.get(userCollectionUrl).then(res => res.text).catch( async err => {
@@ -97,18 +94,18 @@ async function findUserColleaction() {
         await noDataHandle();
     }
 
-    console.log(`已经获取到收藏夹`);
-    console.log(Object.keys(collections).length);
-    console.log('\n');
+    log(`已经获取到收藏夹`);
+    log(Object.keys(collections).length);
+    log('\n');
 }
 
 async function errHandle() {
-    console.log("出错了，重新抓取");
+    log("出错了，重新抓取");
     await reStart();
 }
 
 async function noDataHandle() {
-    console.log("没有关注的收藏夹了");
+    log("没有关注的收藏夹了");
     await reStart();
 }
 

@@ -28,7 +28,7 @@ async function start() {
     await getStartUser();
     await getFollowers();
     continueCrawl = true;
-    console.log('开始获取关注的用户');
+    log('开始获取关注的用户');
     await getFollowings();
 }
 
@@ -44,7 +44,7 @@ function initVariable() {
 async function getStartUser() {
     log('-----------开始获取爬虫开始的用户-----------');
     let user = await UserModel.findOne({'columnsCount': {$exists: false}}).sort({"followerCount":-1}).exec();
-    console.log(user);
+    log(user);
     if(!user) {
         user = getRandom(CONFIG_USER);
     } else {
@@ -177,15 +177,15 @@ function selectUser(html) {
     let keys = Object.keys(data.entities.users);
 
     if(keys.length===0 ||(keys.length === 1 && keys.includes(startUserToken))){
-        console.log('\n');
-        console.log('\n');
-        console.log('\n');
-        console.log('\n');
-        console.log('只有本人');
-        console.log('\n');
-        console.log('\n');
-        console.log('\n');
-        console.log('\n');
+        log('\n');
+        log('\n');
+        log('\n');
+        log('\n');
+        log('只有本人');
+        log('\n');
+        log('\n');
+        log('\n');
+        log('\n');
         return user;
     }
     for(let key in data.entities.users) {

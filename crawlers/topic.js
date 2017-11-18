@@ -4,6 +4,7 @@ const UserModel = require('./../db/user');
 const SkipModel = require('./../db/skip');
 const request = require('superagent');
 const cheerio = require('cheerio');
+const log = console.log;
 
 let skip;
 let user;
@@ -31,8 +32,8 @@ async function write() {
         if(existsTopic.length === 0) {
             let id = currentTopic.id;
 
-            console.log(`抓取话题 ${currentTopic.name} 的页面`);
-            console.log('\n');
+            log(`抓取话题 ${currentTopic.name} 的页面`);
+            log('\n');
 
             let topicHotUrl = `https://www.zhihu.com/topic/${id}/hot`;
             let topicHotHtml = await request.get(topicHotUrl).then(res => res.text).catch( async (err) => {
@@ -50,12 +51,12 @@ async function write() {
                 followers: followers,
                 find_by_user: user
             };
-            console.log(`开始保存`);
+            log(`开始保存`);
             await TopicModel(saveTopic).save();
-            console.log(`保存成功`);
+            log(`保存成功`);
         } else {
-            console.log(`话题 ${currentTopic.name} 已经存在数据库中`);
-            console.log('\n');
+            log(`话题 ${currentTopic.name} 已经存在数据库中`);
+            log('\n');
         }
     }
     pageSkip++;
@@ -81,12 +82,12 @@ function selectTopics(html) {
 async function findUserTopics() {
     while(!user) {
 
-         console.log(`从数据库中抓取用户`);
-         console.log(`skip的值是 ${skip}`);
+         log(`从数据库中抓取用户`);
+         log(`skip的值是 ${skip}`);
 
          user = await UserModel.findOne({'columnsCount': {$exists: true}}).skip(skip).exec();
 
-         console.log(`抓取到用户 ${user.urlToken}`);
+         log(`抓取到用户 ${user.urlToken}`);
 
          let exists = await TopicModel.find({"find_by_user": user.urlToken}).exec().length;
          if(exists) {
@@ -95,8 +96,8 @@ async function findUserTopics() {
          }
     }
 
-    console.log(`开始获取用户${user.urlToken}的关注话题`);
-    console.log('\n');
+    log(`开始获取用户${user.urlToken}的关注话题`);
+    log('\n');
 
     const userTopicUrl = `https://www.zhihu.com/people/${user.urlToken}/following/topics?page=${pageSkip}`;
     const userTopicHtml = await request.get(userTopicUrl).then(res => res.text).catch( async (err) => {
@@ -110,19 +111,19 @@ async function findUserTopics() {
         await noDataHandle();
     }
 
-    console.log(`已经获取到话题`);
-    console.log(Object.keys(topic).length);
-    console.log('\n');
+    log(`已经获取到话题`);
+    log(Object.keys(topic).length);
+    log('\n');
 }
 
 
 async function errHandle() {
-    console.log('出错了，重新抓取');
+    log('出错了，重新抓取');
     await reStart();
 }
 
 async function noDataHandle() {
-    console.log('没有关注的话题了');
+    log('没有关注的话题了');
     await reStart();
 }
 

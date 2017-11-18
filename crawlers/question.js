@@ -1,111 +1,128 @@
 const mongoConnection = require('./../db/connection');
-const CollectionModel = require('./../db/collection');
+const QuestionModel = require('./../db/question');
 const UserModel = require('./../db/user');
 const SkipModel = require('./../db/skip');
 const request = require('superagent');
 const cheerio = require('cheerio');
-
+const log = console.log;
 
 let skip;
 let user;
 let pageSkip = 1;
-let collections = {};
+let questions = {};
 
 
 (async function init() {
     await mongoConnection();
 
     let skips = await SkipModel.findOne().exec();
-    skip = skips.collectionSkip || 1;
+    skip = skips.questionSkip || 1;
     await start();
 })();
 
 async function start() {
-    await findUserColleaction();
+    await findUserQuestion();
     await write();
 }
 
 async function write() {
-    for(let key in collections) {
-        let currentCollection = collections[key];
-        let existsCollection = await CollectionModel.find({_id: currentCollection.id}).exec();
+    for(let key in questions) {
+        let currentQuestion = questions[key];
+        let existsQuestion = await QuestionModel.find({_id: currentQuestion.id}).exec();
 
-        if(existsCollection.length === 0) {
+        if(existsQuestion.length === 0) {
+            let  question = currentQuestion;
             let save = {
-                _id: currentCollection.id,
-                title: currentCollection.title,
-                url: currentCollection.url,
-                answerCount: currentCollection.answerCount,
-                updateTime: currentCollection.updateTime,
-                followerCount: currentCollection.followerCount,
-                isPublic: currentCollection.isPublic,
-                id: currentCollection.id,
-                find_by_user: user.urlToken
+                _id: question.id,
+                title: question.title,
+                updatedTime: question.updatedTime,
+                url: question.url,
+                visitCount: question.visitCount,
+                adminClosedComment: question.adminClosedComment,
+                answerCount: question.answerCount,
+                author: question.author,
+                canComment: question.canComment,
+                collapsedAnswerCount: question.collapsedAnswerCount,
+                commentCount: question.commentCount,
+                commentPermission: question.commentPermission,
+                created: question.created,
+                detail: question.detail,
+                editableDetail: question.editableDetail,
+                excerpt: question.excerpt,
+                followerCount: question.followerCount,
+                hasPublishingDraft: question.hasPublishingDraft,
+                isEditable: question.isEditable,
+                isMuted: question.isMuted,
+                isNormal: question.isNormal,
+                questionType: question.questionType,
+                reviewInfo:  question.reviewInfo,
+                status: question.status,
+                find_by_user: user
             };
-            console.log(`开始保存`);
-            await CollectionModel(save).save();
-            console.log(`保存成功`);
+            log(`开始保存`);
+            await QuestionModel(save).save();
+            log(`保存成功`);
         } else {
-            console.log(`收藏夹 ${currentCollection.title} 已经存在数据库中`);
-            console.log('\n');
+            log(`问题 ${currentQuestion.title} 已经存在数据库中`);
+            log('\n');
         }
     }
     pageSkip++;
     await start();
 }
 
-async function selectCollections(html) {
+async function selectQuestions(html) {
     const $ = cheerio.load(html);
     if( !$('#data').attr('data-state')) {
         return await errHandle();
     }
     const data = JSON.parse($('#data').attr('data-state').toString());
-    return data.entities.favlists;
+    return data.entities.questions;
 }
 
-async function findUserColleaction() {
+async function findUserQuestion() {
     while(!user) {
-        console.log(`从数据库中抓取用户`);
-        console.log(`skip的值是 ${skip}`);
+        log(`从数据库中抓取用户`);
+        log(`skip的值是 ${skip}`);
 
         user = await UserModel.findOne({}).skip(skip).exec();
 
-        console.log(`抓取到用户 ${user.urlToken}`);
+        log(`抓取到用户 ${user.urlToken}`);
 
-        let exists = await CollectionModel.find({"find_by_user": user.urlToken}).exec().length;
+        let exists = await QuestionModel.find({"find_by_user": user.urlToken}).exec().length;
         if(exists) {
             user = '';
             skip++;
         }
     }
 
-    console.log(`开始获取用户${user.urlToken}的关注收藏夹`);
-    console.log('\n');
+    log(`开始获取用户${user.urlToken}关注的问题`);
+    log('\n');
 
-    const userCollectionUrl = `https://www.zhihu.com/people/${user.urlToken}/following/collections?page=${pageSkip}`;
+    const userCollectionUrl = `https://www.zhihu.com/people/${user.urlToken}/following/questions?page=${pageSkip}`;
     const userCollectionHtml = await request.get(userCollectionUrl).then(res => res.text).catch( async err => {
         await errHandle();
     });
 
-    collections = await selectCollections(userCollectionHtml);
+    questions = await selectQuestions(userCollectionHtml);
 
 
-    while(Object.keys(collections).length < 1) {
+    while(Object.keys(questions).length < 1) {
         await noDataHandle();
     }
 
-    console.log(`已经获取到收藏夹`);
-    console.log(Object.keys(collections).length);
-    console.log('\n');
+    log(`已经获取到问题`);
+    log(Object.keys(questions).length);
+    log('\n');
 }
 
 async function errHandle() {
-    console.log("出错了，重新抓取");
+    log("出错了，重新抓取");
     await reStart();
 }
 
 async function noDataHandle() {
-    console.log("没有关注的收藏夹了");
+    log("没有关注的收藏夹了");
     await reStart();
 }
 
@@ -113,7 +130,7 @@ async function reStart() {
     skip++;
     pageSkip = 0;
     user = '';
-    collections = {};
-    await UserModel.update({},{$set:{collectionSkip:skip}});
-    await findUserColleaction();
+    questions = {};
+    await SkipModel.update({},{$set:{questionSkip:skip}});
+    await findUserQuestion();
 }

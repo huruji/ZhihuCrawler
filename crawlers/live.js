@@ -4,7 +4,7 @@ const UserModel = require('./../db/user');
 const SkipModel = require('./../db/skip');
 const request = require('superagent');
 const cheerio = require('cheerio');
-
+const log = console.log;
 
 let skip;
 let user;
@@ -23,7 +23,7 @@ async function getLive(){
     skip = skips.liveSkip || 1;
     user = await UserModel.findOne({"participatedLiveCount": {$gt:0}}).skip(skip).exec();
 
-    console.log(`已经获取到了用户 ${user.name} 的数据`);
+    log(`已经获取到了用户 ${user.name} 的数据`);
 
     let userIndex = await request
         .get(`https://www.zhihu.com/people/${user.urlToken}/activities`)
@@ -37,8 +37,8 @@ async function getLive(){
     }
     let id = liveUrl.substr(liveUrl.lastIndexOf('/') + 1);
 
-    console.log(`正在获取用户 ${user.name} 参与过的live`);
-    console.log('\n');
+    log(`正在获取用户 ${user.name} 参与过的live`);
+    log('\n');
 
     let liveApiUrl = `https://api.zhihu.com/people/${id}/lives`;
     let resData = await request.get(liveApiUrl)
@@ -67,11 +67,11 @@ async function getLive(){
                 seats: liveData.seats.taken,
                 status: liveData.status
             };
-            console.log(`开始保存live ${liveData.subject}`);
+            log(`开始保存live ${liveData.subject}`);
             await LiveModel(save).save();
-            console.log(`保存成功`);
+            log(`保存成功`);
         } else {
-            console.log(`live ${liveData.subject} 已经存在数据库中`);
+            log(`live ${liveData.subject} 已经存在数据库中`);
         }
     }
     skip++;
@@ -80,7 +80,7 @@ async function getLive(){
 }
 
 async function errHandle() {
-    console.log('出错了，重新开始抓取');
+    log('出错了，重新开始抓取');
     skip++;
     await SkipModel.update({},{$set:{liveSkip:skip}});
     setTimeout(async () => {
