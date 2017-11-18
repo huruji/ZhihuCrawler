@@ -8,11 +8,12 @@
     "server": " node --harmony ./server/server.js",
     "start": "node --harmony index.js",
     "crawler": "node --harmony ./crawlers/index.js",
-    "user": "node --harmony ./crawlers/user.js",
+    "user": "node --harmony ./crawlers/subCrawler.js user",
     "topic": "node --harmony ./crawlers/subCrawler.js topic",
-    "perfect": "node --harmony ./crawlers/perfectUser.js",
-    "live": "node --harmony ./crawlers/live.js",
-    "collection": "node --harmony ./crawlers/collection.js"
+    "perfect": "node --harmony ./crawlers/subCrawler.js perfectUser",
+    "live": "node --harmony ./crawlers/subCrawler.js live",
+    "collection": "node --harmony ./crawlers/subCrawler.js collection",
+    "column": "node --harmony ./crawlers/subCrawler.js column"
   },
   "keywords": [],
   "author": "",

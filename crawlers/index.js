@@ -2,19 +2,14 @@ const spawn = require('child_process').spawn;
 const log = console.log;
 const path = require('path');
 
+const mongoConnection = require('./../db/connection');
+
 let perfect, live, column, collection, topic, question;
 
+(async function(){
+    await mongoConnection();
+})();
 
-const user = spawn('node', ['--harmony','user.js'], {
-    cwd: __dirname,
-    stdio: 'inherit'
-});
-
-user.on('error', function(err) {
-    log(err);
-    log('进程开启遇到错误');
-    process.exit();
-});
 
 log('1分钟后将开始完善用户信息\n');
 
@@ -24,78 +19,34 @@ log('3分钟后将开始爬取主题、专栏、收藏夹\n');
 
 log('4分钟后将开始爬取Live');
 
+setTimeout( async() => {
+    await require('./scripts/user.js')();
+}, 1000 * 10);
 
 
-
-setTimeout(() => {
-    startPerfect();
+setTimeout( async() => {
+   await require('./scripts/perfectUser.js')();
 }, 1000 * 60 * 1);
 
-setTimeout(() => {
-    startQuestion();
+setTimeout(async() => {
+    await require('./scripts/question.js')();
 }, 1000 * 60 * 20);
 
-setTimeout(() => {
-    startTopic();
+setTimeout(async() => {
+    await require('./scripts/topic.js')();
 }, 1000 * 60 * 2);
 
-setTimeout(() => {
-    startColumn();
+setTimeout(async() => {
+    await require('./scripts/column.js')();
 }, 1000 * 60 * 3);
 
-setTimeout(() => {
-    startCollection();
+setTimeout(async() => {
+    await require('./scripts/collection.js')();
 }, 1000 * 60 * 3);
 
-setTimeout(() => {
-    startLive();
+setTimeout(async() => {
+    await require('./scripts/live.js')();
 }, 1000 * 60 * 4);
 
 
-function startQuestion() {
-    log('---------------开启完善用户信息进程---------------');
-    perfect = spawn('node', ['--harmony', 'question.js'], {
-        cwd: __dirname,
-        stdio: 'inherit'
-    });
-}
 
-function startPerfect() {
-    log('---------------开启完善用户信息进程---------------');
-    perfect = spawn('node', ['--harmony', 'perfectUser.js'], {
-        cwd: __dirname,
-        stdio: 'inherit'
-    });
-}
-
-function startLive() {
-    log('---------------开启Live进程---------------');
-    perfect = spawn('node', ['--harmony', 'live.js'], {
-        cwd: __dirname,
-        stdio: 'inherit'
-    });
-}
-
-function startColumn() {
-    log('---------------开启专栏进程---------------');
-    perfect = spawn('node', ['--harmony', 'column.js'], {
-        cwd: __dirname,
-        stdio: 'inherit'
-    });
-}
-
-function startCollection() {
-    log('---------------开启专栏进程---------------');
-    perfect = spawn('node', ['--harmony', 'collection.js'], {
-        cwd: __dirname,
-        stdio: 'inherit'
-    });
-}
-
-function startTopic() {
-    log('---------------开启专栏进程---------------');
-    perfect = spawn('node', ['--harmony', 'topic.js'], {
-        cwd: __dirname,
-        stdio: 'inherit'
-    });
-}
