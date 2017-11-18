@@ -11,19 +11,22 @@ const server = spawn('node', ['--harmony','server.js'], {
     stdio: 'inherit'
 });
 
+server.on('error', function(err) {
+    log(err);
+    log('服务器进程开启遇到错误');
+    process.exit();
+});
 
 log('-------------------开启爬虫进程-------------------');
 
-let crawler = spawn('node', ['--harmony', 'user.js'], {
+let crawler = spawn('node', ['--harmony', 'index.js'], {
     cwd: path.join(__dirname, 'crawlers'),
     stdio: 'inherit'
 });
 
-setInterval(() => {
-    crawler.kill();
-    crawler = spawn('node', ['--harmony', 'user.js'], {
-        cwd: path.join(__dirname, 'crawlers'),
-        stdio: 'inherit'
-    });
-}, 10 * 60 * 1000);
+crawler.on('error', function(err) {
+    log(err);
+    log('爬虫进程开启遇到错误');
+    process.exit();
+});
 
