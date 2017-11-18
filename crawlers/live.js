@@ -1,13 +1,10 @@
 const mongoConnection = require('./../db/connection');
 const LiveModel = require('./../db/live');
 const UserModel = require('./../db/user');
+const SkipModel = require('./../db/skip');
 const request = require('superagent');
 const cheerio = require('cheerio');
-const jsonfile = require('jsonfile');
 
-const path = require('path');
-
-const skipFile = path.join(__dirname,'../skipConfig.json');
 
 let skip;
 let user;
@@ -22,7 +19,8 @@ mongoConnection();
    await getLive();
 })()
 async function getLive(){
-    skip = parseInt(jsonfile.readFileSync(skipFile).liveSkip);
+    let skips = await SkipModel.findOne().exec();
+    skip = skips.liveSkip || 1;
     user = await UserModel.findOne({"participatedLiveCount": {$gt:0}}).skip(skip).exec();
 
     console.log(`已经获取到了用户 ${user.name} 的数据`);
@@ -77,18 +75,14 @@ async function getLive(){
         }
     }
     skip++;
-    const skipData = jsonfile.readFileSync(skipFile);
-    skipData.liveSkip = Number(skipData.liveSkip) + 1;
-    jsonfile.writeFileSync(skipFile, skipData);
+    await SkipModel.update({},{$set:{liveSkip:skip}});
     await getLive();
 }
 
 async function errHandle() {
     console.log('出错了，重新开始抓取');
     skip++;
-    const skipData = jsonfile.readFileSync(skipFile);
-    skipData.liveSkip = Number(skipData.liveSkip) + 1;
-    jsonfile.writeFileSync(skipFile, skipData);
+    await SkipModel.update({},{$set:{liveSkip:skip}});
     setTimeout(async () => {
         await getLive();
     }, 1000 * 5);

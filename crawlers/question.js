@@ -1,12 +1,10 @@
 const mongoConnection = require('./../db/connection');
 const CollectionModel = require('./../db/collection');
 const UserModel = require('./../db/user');
+const SkipModel = require('./../db/skip');
 const request = require('superagent');
 const cheerio = require('cheerio');
-const jsonfile = require('jsonfile');
-const path = require('path');
 
-const skipFile = path.join(__dirname,'../skipConfig.json');
 
 let skip;
 let user;
@@ -17,7 +15,8 @@ let collections = {};
 (async function init() {
     await mongoConnection();
 
-    skip = parseInt(jsonfile.readFileSync(skipFile).questionSkip);
+    let skips = await SkipModel.findOne().exec();
+    skip = skips.collectionSkip || 1;
     await start();
 })();
 
@@ -115,8 +114,6 @@ async function reStart() {
     pageSkip = 0;
     user = '';
     collections = {};
-    const skipData = jsonfile.readFileSync(skipFile);
-    skipData.collectionSkip = Number(skipData.collectionSkip) + 1;
-    jsonfile.writeFileSync(skipFile, skipData);
+    await UserModel.update({},{$set:{collectionSkip:skip}});
     await findUserColleaction();
 }

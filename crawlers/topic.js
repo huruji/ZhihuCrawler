@@ -4,8 +4,6 @@ const UserModel = require('./../db/user');
 const SkipModel = require('./../db/skip');
 const request = require('superagent');
 const cheerio = require('cheerio');
-const path = require('path');
-
 
 let skip;
 let user;
@@ -15,8 +13,6 @@ let topic = {};
 
 (async function init() {
     await mongoConnection();
-    let num = await TopicModel.findOne({}).count().exec();
-    console.log(num);
     let skips = await SkipModel.findOne().exec();
     skip = skips.topicSkip || 1;
     await start();
@@ -135,6 +131,6 @@ async function reStart() {
     pageSkip = 0;
     user = '';
     topic = {};
-    await UserModel.update({},{$set:{topicSkip:skip}});
+    await SkipModel.update({},{$set:{topicSkip:skip}});
     await findUserTopics();
 }
