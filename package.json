@@ -13,7 +13,8 @@
     "perfect": "node --harmony ./crawlers/subCrawler.js perfectUser",
     "live": "node --harmony ./crawlers/subCrawler.js live",
     "collection": "node --harmony ./crawlers/subCrawler.js collection",
-    "column": "node --harmony ./crawlers/subCrawler.js column"
+    "column": "node --harmony ./crawlers/subCrawler.js column",
+    "question": "node --harmony ./crawlers/subCrawler.js question"
   },
   "keywords": [],
   "author": "",

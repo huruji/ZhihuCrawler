@@ -26,9 +26,6 @@ async function init() {
 async function start() {
     await getStartUser();
     await getFollowers();
-    continueCrawl = true;
-    log('开始获取关注的用户');
-    await getFollowings();
 }
 
 function initVariable() {
@@ -83,7 +80,9 @@ async function getFollowers() {
             await writeUser(users[i]);
         }
         page++;
-        await getFollowers();
+        return setTimeout( async ()=>{
+            await getFollowers(url);
+        }, 10);
     } else {
 
         log(`\n该用户已经没有了关注者，将开始获取该用户关注的用户`);
@@ -91,7 +90,11 @@ async function getFollowers() {
         continueCrawl = false;
         page = 1;
         users = [];
-        return;
+        return setTimeout( async () => {
+            continueCrawl = true;
+            log('开始获取关注的用户');
+            await getFollowings();
+        },10)
     }
 
 }

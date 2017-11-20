@@ -29,7 +29,10 @@ async function getLive(){
         await SkipModel({}).save();
     }
     user = await UserModel.findOne({"participatedLiveCount": {$gt:0}}).skip(skip).exec();
-
+    if(!user) {
+        log('没有符合条件的用户了');
+        process.exit();
+    }
     log(`已经获取到了用户 ${user.name} 的数据`);
 
     let userIndex = await request

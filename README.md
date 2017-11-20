@@ -1,3 +1,5 @@
-# ZhihuCrawler
+# 知乎站点爬虫
 
-![](./logo.png)
+<p align="center">
+  <img width="467px" src="./logo.png">
+</p>

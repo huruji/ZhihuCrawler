@@ -4,7 +4,6 @@ const path = require('path');
 
 const mongoConnection = require('./../db/connection');
 
-let perfect, live, column, collection, topic, question;
 
 (async function(){
     await mongoConnection();
